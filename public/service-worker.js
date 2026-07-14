@@ -1,0 +1,1 @@
+const CACHE="bt-gym-v1";self.addEventListener("install",e=>self.skipWaiting());self.addEventListener("activate",e=>self.clients.claim());self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{const cl=r.clone();caches.open(CACHE).then(ch=>ch.put(e.request,cl));return r;}).catch(()=>c)));});
