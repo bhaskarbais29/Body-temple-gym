@@ -46,12 +46,54 @@ const TEMPLATES = {
 const DEFAULT_BUSINESS = { gymName: "Body Temple Health Club", address: "", phone: "", gstin: "", nextInvoiceNo: 1 };
 
 function useGymData() {
+  function useGymData() {
   const [members, setMembers] = useState([]);
   const [checkins, setCheckins] = useState([]);
   const [invoices, setInvoices] = useState([]);
   const [business, setBusiness] = useState(DEFAULT_BUSINESS);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const ref = doc(db, "gym", "data");
+    const unsub = onSnapshot(
+      ref,
+      (snap) => {
+        if (snap.exists()) {
+          const parsed = snap.data();
+          setMembers(parsed.members || []);
+          setCheckins(parsed.checkins || []);
+          setInvoices(parsed.invoices || []);
+          setBusiness({ ...DEFAULT_BUSINESS, ...(parsed.business || {}) });
+        }
+        setLoaded(true);
+      },
+      () => {
+        setError("Could not sync. Check your connection.");
+        setLoaded(true);
+      }
+    );
+    return () => unsub();
+  }, []);
+
+  const persist = async (next) => {
+    try {
+      await setDoc(doc(db, "gym", "data"), next);
+      setError(null);
+    } catch (e) {
+      setError("Could not save. Your last change may not persist.");
+    }
+  };
+
+  const state = { members, checkins, invoices, business };
+
+  const saveMembers = (next) => { setMembers(next); persist({ ...state, members: next }); };
+  const saveCheckins = (next) => { setCheckins(next); persist({ ...state, checkins: next }); };
+  const saveInvoices = (next) => { setInvoices(next); persist({ ...state, invoices: next }); };
+  const saveBusiness = (next) => { setBusiness(next); persist({ ...state, business: next }); };
+
+  return { members, checkins, invoices, business, saveMembers, saveCheckins, saveInvoices, saveBusiness, loaded, error };
+}
 
   useEffect(() => {
     try {
