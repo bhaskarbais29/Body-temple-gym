@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Plus, Search, MessageCircle, Pencil, Trash2, X, Dumbbell, LogIn, Users, AlertTriangle, CalendarClock, Receipt, Printer, Settings, ChevronLeft, Download } from "lucide-react";
 import { db } from "./firebase.js";
+import html2canvas from "html2canvas";
 import { doc, onSnapshot, setDoc } from "firebase/firestore";
 
 const FONT_IMPORT = "@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');";
@@ -271,7 +272,23 @@ function InvoiceForm({ member, business, nextInvoiceNo, onSave, onCancel }) {
 
 function InvoiceView({ invoice, business, onClose }) {
   const printRef = useRef(null);
-  const handlePrint = () => window.print();
+  const handleShare = async () => {
+  const canvas = await html2canvas(printRef.current, { scale: 2, backgroundColor: "#ffffff" });
+  canvas.toBlob(async (blob) => {
+    if (!blob) return;
+    const file = new File([blob], `${invoiceNoStr}.png`, { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: `Invoice ${invoiceNoStr}` }); } catch (e) {}
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${invoiceNoStr}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  }, "image/png");
+};
   const invoiceNoStr = `BT-${String(invoice.number).padStart(4, "0")}`;
 
     return (
@@ -290,9 +307,6 @@ function InvoiceView({ invoice, business, onClose }) {
     }
   }
 `}</style>
-
-
-
    <div id="gt-invoice-modal" style={{ ...styles.modal, maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
        <div style={styles.modalHeader}>
           <h2 style={styles.modalTitle}>Invoice {invoiceNoStr}</h2>
