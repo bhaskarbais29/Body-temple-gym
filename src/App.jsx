@@ -275,20 +275,24 @@ function InvoiceView({ invoice, business, onClose }) {
   const invoiceNoStr = `BT-${String(invoice.number).padStart(4, "0")}`;
 
   return (
-    <div id="gt-invoice-overlay" style={styles.modalOverlay} onClick={onClose}><style>{`
+    <div id="gt-invoice-overlay" <style>{`
+  @page { margin: 10mm; }
   @media print {
     html, body { height: auto !important; overflow: visible !important; }
     body * { visibility: hidden; }
     #gt-invoice-print, #gt-invoice-print * { visibility: visible; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     #gt-invoice-overlay { position: static !important; background: none !important; padding: 0 !important; display: block !important; }
+    #gt-invoice-modal { max-height: none !important; overflow: visible !important; padding: 0 !important; max-width: none !important; }
     #gt-invoice-print {
-      position: static !important; left: 0; top: 0; width: 100%; margin: 0; padding: 24px; background: #fff !important;
+      position: static !important; width: 100%; margin: 0; padding: 24px; background: #fff !important;
+      page-break-after: avoid; break-after: avoid;
     }
   }
 `}</style>
 
-      <div style={{ ...styles.modal, maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
-        <div style={styles.modalHeader}>
+
+   <div id="gt-invoice-modal" style={{ ...styles.modal, maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
+       <div style={styles.modalHeader}>
           <h2 style={styles.modalTitle}>Invoice {invoiceNoStr}</h2>
           <button style={styles.iconBtn} onClick={onClose} aria-label="Close"><X size={18} color="#8B8D94" /></button>
         </div>
