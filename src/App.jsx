@@ -381,9 +381,9 @@ function InvoiceView({ invoice, business, onClose }) {
         </div>
         <div style={styles.modalFooter}>
           <button style={styles.secondaryBtn} onClick={onClose}>Close</button>
-          <button style={{ ...styles.primaryBtn, display: "inline-flex", alignItems: "center", gap: 8 }} onClick={handlePrint}>
-            <Printer size={16} /> Print / Save as PDF
-          </button>
+          <button style={{ ...styles.primaryBtn, display: "inline-flex", alignItems: "center", gap: 8 }} onClick={handleShare}>
+  <Printer size={16} /> Share / Save Invoice
+</button>
         </div>
       </div>
     </div>
