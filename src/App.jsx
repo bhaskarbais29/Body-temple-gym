@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Plus, Search, MessageCircle, Pencil, Trash2, X, Dumbbell, LogIn, Users, AlertTriangle, CalendarClock, Receipt, Printer, Settings, ChevronLeft, Download } from "lucide-react";
+import { db } from "./firebase.js";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
 
 const FONT_IMPORT = "@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');";
 
@@ -46,7 +48,6 @@ const TEMPLATES = {
 const DEFAULT_BUSINESS = { gymName: "Body Temple Health Club", address: "", phone: "", gstin: "", nextInvoiceNo: 1 };
 
 function useGymData() {
-  function useGymData() {
   const [members, setMembers] = useState([]);
   const [checkins, setCheckins] = useState([]);
   const [invoices, setInvoices] = useState([]);
@@ -79,42 +80,6 @@ function useGymData() {
   const persist = async (next) => {
     try {
       await setDoc(doc(db, "gym", "data"), next);
-      setError(null);
-    } catch (e) {
-      setError("Could not save. Your last change may not persist.");
-    }
-  };
-
-  const state = { members, checkins, invoices, business };
-
-  const saveMembers = (next) => { setMembers(next); persist({ ...state, members: next }); };
-  const saveCheckins = (next) => { setCheckins(next); persist({ ...state, checkins: next }); };
-  const saveInvoices = (next) => { setInvoices(next); persist({ ...state, invoices: next }); };
-  const saveBusiness = (next) => { setBusiness(next); persist({ ...state, business: next }); };
-
-  return { members, checkins, invoices, business, saveMembers, saveCheckins, saveInvoices, saveBusiness, loaded, error };
-}
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("gym-data");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        setMembers(parsed.members || []);
-        setCheckins(parsed.checkins || []);
-        setInvoices(parsed.invoices || []);
-        setBusiness({ ...DEFAULT_BUSINESS, ...(parsed.business || {}) });
-      }
-    } catch (e) {
-      // no saved data yet, that's fine
-    } finally {
-      setLoaded(true);
-    }
-  }, []);
-
-  const persist = (next) => {
-    try {
-      localStorage.setItem("gym-data", JSON.stringify(next));
       setError(null);
     } catch (e) {
       setError("Could not save. Your last change may not persist.");
