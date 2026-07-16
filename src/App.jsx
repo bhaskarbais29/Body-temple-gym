@@ -286,7 +286,6 @@ function InvoiceView({ invoice, business, onClose }) {
     }
   }
 `}</style>
-
       <div style={{ ...styles.modal, maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
         <div style={styles.modalHeader}>
           <h2 style={styles.modalTitle}>Invoice {invoiceNoStr}</h2>
