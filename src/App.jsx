@@ -275,7 +275,7 @@ function InvoiceView({ invoice, business, onClose }) {
   const invoiceNoStr = `BT-${String(invoice.number).padStart(4, "0")}`;
 
     return (
-    <div id="gt-invoice-overlay" style={styles.modalOverlay} onClick={onClose}>
+    <div id="gt-invoice-overlay" style={styles.modalOverlay} onClick={handlePrint}>
       <style>{`
   @page { margin: 10mm; }
   @media print {
