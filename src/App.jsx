@@ -274,9 +274,9 @@ function InvoiceView({ invoice, business, onClose }) {
   const handlePrint = () => window.print();
   const invoiceNoStr = `BT-${String(invoice.number).padStart(4, "0")}`;
 
-  return (
-    <div id="gt-invoice-overlay" 
-     <style>{`
+    return (
+    <div id="gt-invoice-overlay" style={styles.modalOverlay} onClick={onClose}>
+      <style>{`
   @page { margin: 10mm; }
   @media print {
     html, body { height: auto !important; overflow: visible !important; }
@@ -290,6 +290,7 @@ function InvoiceView({ invoice, business, onClose }) {
     }
   }
 `}</style>
+
 
 
    <div id="gt-invoice-modal" style={{ ...styles.modal, maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
