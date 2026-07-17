@@ -39,12 +39,27 @@ function whatsappLink(phone, text) {
   return `https://wa.me/${num}?text=${encodeURIComponent(text)}`;
 }
 
+const UPI_ID = "8827730435@ibl";
+const UPI_NAME = "Bhaskar singh bais";
+
+function upiLink(amount, note) {
+  const params = new URLSearchParams({
+    pa: UPI_ID,
+    pn: UPI_NAME,
+    cu: "INR",
+    ...(amount ? { am: amount } : {}),
+    ...(note ? { tn: note } : {}),
+  });
+  return `upi://pay?${params.toString()}`;
+}
+
 const TEMPLATES = {
-  renewal: (m) => `Hi ${m.name}! This is a reminder from Body Temple Health Club — your ${m.plan} membership ends on ${fmtDate(m.endDate)}. Renew soon to keep your progress going. Reply here to renew.`,
+  renewal: (m) => `Hi ${m.name}! This is a reminder from Body Temple Health Club — your ${m.plan} membership ends on ${fmtDate(m.endDate)}. Renew soon to keep your progress going.\n\nPay here: ${upiLink("", `${m.name} - ${m.plan} renewal`)}`,
   welcome: (m) => `Welcome to Body Temple Health Club, ${m.name}! Your ${m.plan} membership is active from ${fmtDate(m.startDate)} to ${fmtDate(m.endDate)}. Let's get to work.`,
-  payment: (m) => `Hi ${m.name}, this is a payment reminder for your Body Temple Health Club membership. Please clear your dues at your earliest convenience.`,
+  payment: (m) => `Hi ${m.name}, this is a payment reminder for your Body Temple Health Club membership.\n\nPay here: ${upiLink("", `${m.name} - dues`)}`,
   custom: () => "",
 };
+
 
 const DEFAULT_BUSINESS = { gymName: "Body Temple Health Club", address: "", phone: "", gstin: "", nextInvoiceNo: 1 };
 
