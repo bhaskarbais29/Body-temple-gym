@@ -37,10 +37,9 @@ function whatsappLink(phone, text) {
   let num = phone.replace(/[^\d]/g, "");
   if (num.length === 10) num = "91" + num;
   return `https://wa.me/${num}?text=${encodeURIComponent(text)}`;
-}
-
 const UPI_ID = "8827730435@ibl";
 const UPI_NAME = "Bhaskar singh bais";
+}
 
 function upiLink(amount, note) {
   const params = new URLSearchParams({
