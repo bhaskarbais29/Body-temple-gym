@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Plus, Search, MessageCircle, Pencil, Trash2, X, Dumbbell, LogIn, Users, AlertTriangle, CalendarClock, Receipt, Printer, Settings, ChevronLeft, Download } from "lucide-react";
 import { db } from "./firebase.js";
-import html2canvas from "html2canvas";
 import { doc, onSnapshot, setDoc } from "firebase/firestore";
 
 const FONT_IMPORT = "@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');";
