@@ -286,26 +286,10 @@ function InvoiceForm({ member, business, nextInvoiceNo, onSave, onCancel }) {
 
 function InvoiceView({ invoice, business, onClose }) {
   const printRef = useRef(null);
-  const handleShare = async () => {
-  const canvas = await html2canvas(printRef.current, { scale: 2, backgroundColor: "#ffffff" });
-  canvas.toBlob(async (blob) => {
-    if (!blob) return;
-    const file = new File([blob], `${invoiceNoStr}.png`, { type: "image/png" });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: `Invoice ${invoiceNoStr}` }); } catch (e) {}
-    } else {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${invoiceNoStr}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-  }, "image/png");
-};
+  const handlePrint = () => window.print();
   const invoiceNoStr = `BT-${String(invoice.number).padStart(4, "0")}`;
 
-    return (
+  return (
     <div id="gt-invoice-overlay" style={styles.modalOverlay} onClick={onClose}>
       <style>{`
   @page { margin: 10mm; }
@@ -321,8 +305,8 @@ function InvoiceView({ invoice, business, onClose }) {
     }
   }
 `}</style>
-   <div id="gt-invoice-modal" style={{ ...styles.modal, maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
-       <div style={styles.modalHeader}>
+      <div id="gt-invoice-modal" style={{ ...styles.modal, maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
+        <div style={styles.modalHeader}>
           <h2 style={styles.modalTitle}>Invoice {invoiceNoStr}</h2>
           <button style={styles.iconBtn} onClick={onClose} aria-label="Close"><X size={18} color="#8B8D94" /></button>
         </div>
@@ -395,15 +379,14 @@ function InvoiceView({ invoice, business, onClose }) {
         </div>
         <div style={styles.modalFooter}>
           <button style={styles.secondaryBtn} onClick={onClose}>Close</button>
-          <button style={{ ...styles.primaryBtn, display: "inline-flex", alignItems: "center", gap: 8 }} onClick={handleShare}>
-  <Printer size={16} /> Share / Save Invoice
-</button>
+          <button style={{ ...styles.primaryBtn, display: "inline-flex", alignItems: "center", gap: 8 }} onClick={handlePrint}>
+            <Printer size={16} /> Print / Save as PDF
+          </button>
         </div>
       </div>
     </div>
   );
 }
-
 function BusinessSettingsForm({ business, onSave, onCancel }) {
   const [gymName, setGymName] = useState(business.gymName);
   const [address, setAddress] = useState(business.address);
