@@ -1,1 +1,17 @@
-const CACHE="bt-gym-v1";self.addEventListener("install",e=>self.skipWaiting());self.addEventListener("activate",e=>self.clients.claim());self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{const cl=r.clone();caches.open(CACHE).then(ch=>ch.put(e.request,cl));return r;}).catch(()=>c)));});
+const CACHE = "bt-gym-v2";
+self.addEventListener("install", (e) => self.skipWaiting());
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) => Promise.all(keys.map((k) => k !== CACHE && caches.delete(k))))
+  );
+  self.clients.claim();
+});
+self.addEventListener("fetch", (e) => {
+  e.respondWith(
+    fetch(e.request).then((res) => {
+      const clone = res.clone();
+      caches.open(CACHE).then((c) => c.put(e.request, clone));
+      return res;
+    }).catch(() => caches.match(e.request))
+  );
+});
