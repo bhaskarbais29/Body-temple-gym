@@ -68,6 +68,7 @@ function useGymData() {
   const [business, setBusiness] = useState(DEFAULT_BUSINESS);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
+  const stateRef = useRef({ members: [], checkins: [], invoices: [], business: DEFAULT_BUSINESS });
 
   useEffect(() => {
     const ref = doc(db, "gym", "data");
@@ -76,10 +77,17 @@ function useGymData() {
       (snap) => {
         if (snap.exists()) {
           const parsed = snap.data();
-          setMembers(parsed.members || []);
-          setCheckins(parsed.checkins || []);
-          setInvoices(parsed.invoices || []);
-          setBusiness({ ...DEFAULT_BUSINESS, ...(parsed.business || {}) });
+          const next = {
+            members: parsed.members || [],
+            checkins: parsed.checkins || [],
+            invoices: parsed.invoices || [],
+            business: { ...DEFAULT_BUSINESS, ...(parsed.business || {}) },
+          };
+          stateRef.current = next;
+          setMembers(next.members);
+          setCheckins(next.checkins);
+          setInvoices(next.invoices);
+          setBusiness(next.business);
         }
         setLoaded(true);
       },
@@ -100,16 +108,29 @@ function useGymData() {
     }
   };
 
-  const state = { members, checkins, invoices, business };
-
-  const saveMembers = (next) => { setMembers(next); persist({ ...state, members: next }); };
-  const saveCheckins = (next) => { setCheckins(next); persist({ ...state, checkins: next }); };
-  const saveInvoices = (next) => { setInvoices(next); persist({ ...state, invoices: next }); };
-  const saveBusiness = (next) => { setBusiness(next); persist({ ...state, business: next }); };
+  const saveMembers = (next) => {
+    stateRef.current = { ...stateRef.current, members: next };
+    setMembers(next);
+    persist(stateRef.current);
+  };
+  const saveCheckins = (next) => {
+    stateRef.current = { ...stateRef.current, checkins: next };
+    setCheckins(next);
+    persist(stateRef.current);
+  };
+  const saveInvoices = (next) => {
+    stateRef.current = { ...stateRef.current, invoices: next };
+    setInvoices(next);
+    persist(stateRef.current);
+  };
+  const saveBusiness = (next) => {
+    stateRef.current = { ...stateRef.current, business: next };
+    setBusiness(next);
+    persist(stateRef.current);
+  };
 
   return { members, checkins, invoices, business, saveMembers, saveCheckins, saveInvoices, saveBusiness, loaded, error };
 }
-
 function MemberForm({ initial, onSave, onCancel }) {
   const [name, setName] = useState(initial?.name || "");
   const [phone, setPhone] = useState(initial?.phone || "");
