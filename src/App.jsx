@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Plus, Search, MessageCircle, Pencil, Trash2, X, Dumbbell, LogIn, Users, AlertTriangle, CalendarClock, Receipt, Printer, Settings, ChevronLeft, Download } from "lucide-react";
+import { Plus, Search, MessageCircle, Pencil, Trash2, X, Dumbbell, LogIn, Users, AlertTriangle, CalendarClock, Receipt, Printer, Settings, ChevronLeft, Download, RefreshCw } from "lucide-react";
 import { db } from "./firebase.js";
 import { doc, onSnapshot, setDoc } from "firebase/firestore";
 
