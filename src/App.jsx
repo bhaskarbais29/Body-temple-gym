@@ -514,10 +514,16 @@ export default function GymTracker() {
     setEditing(null);
   };
 
-  const deleteMember = (id) => {
+    const deleteMember = (id) => {
     saveMembers(members.filter((m) => m.id !== id));
     saveCheckins(checkins.filter((c) => c.memberId !== id));
     setConfirmDelete(null);
+  };
+
+  const renewMember = (member) => {
+    const start = todayISO();
+    const end = PLAN_DAYS[member.plan] != null ? addDays(start, PLAN_DAYS[member.plan]) : member.endDate;
+    saveMembers(members.map((m) => (m.id === member.id ? { ...m, startDate: start, endDate: end } : m)));
   };
 
   const saveInvoice = (inv) => {
