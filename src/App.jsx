@@ -614,7 +614,7 @@ export default function GymTracker() {
                     </div>
                     <PlateBadge daysLeft={m.status.daysLeft} tone={m.status.tone} />
                   </div>
-                  <div style={styles.cardActions}>
+                                    <div style={styles.cardActions}>
                     <button style={{ ...styles.actionBtn, ...(isCheckedIn(m.id) ? styles.actionBtnActive : {}) }} onClick={() => toggleCheckin(m)}>
                       <LogIn size={14} /> {isCheckedIn(m.id) ? "Checked in" : "Check in"}
                     </button>
