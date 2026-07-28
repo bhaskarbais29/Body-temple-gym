@@ -614,10 +614,15 @@ export default function GymTracker() {
                     </div>
                     <PlateBadge daysLeft={m.status.daysLeft} tone={m.status.tone} />
                   </div>
-                                    <div style={styles.cardActions}>
+                   <div style={styles.cardActions}>
                     <button style={{ ...styles.actionBtn, ...(isCheckedIn(m.id) ? styles.actionBtnActive : {}) }} onClick={() => toggleCheckin(m)}>
                       <LogIn size={14} /> {isCheckedIn(m.id) ? "Checked in" : "Check in"}
                     </button>
+                    {(m.status.tone === "expiring" || m.status.tone === "expired") && (
+                      <button style={{ ...styles.actionBtn, background: "#1F3B2C", borderColor: "#2E5A41", color: "#7FD99A" }} onClick={() => renewMember(m)}>
+                        <RefreshCw size={14} /> Renew
+                      </button>
+                    )}
                     <button style={styles.actionBtnGhost} onClick={() => setWaMember(m)}><MessageCircle size={14} /> Message</button>
                     <button style={styles.actionBtnGhost} onClick={() => setInvoiceMember(m)}><Receipt size={14} /> Invoice</button>
                     <button style={styles.iconBtn} onClick={() => { setEditing(m); setShowForm(true); }} aria-label="Edit"><Pencil size={15} color="#8B8D94" /></button>
